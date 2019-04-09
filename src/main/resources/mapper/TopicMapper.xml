@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.withstars.dao.TopicMapper" >
+<mapper namespace="com.withstars.dao.forum.TopicMapper" >
 
 
 
   <!-- 主题基本结果集  -->
-  <resultMap id="BaseResultMap" type="com.withstars.domain.Topic" >
+  <resultMap id="BaseResultMap" type="com.withstars.domain.forum.Topic" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -17,12 +17,12 @@
   </resultMap>
 
   <!-- 主题基本结果集+ 主题内容  用于主题详情-->
-  <resultMap id="ResultMapWithBLOBs" type="com.withstars.domain.Topic" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="com.withstars.domain.forum.Topic" extends="BaseResultMap" >
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
   </resultMap>
 
   <!-- 主题和用户信息结果集 用于首页显示  -->
-  <resultMap id="topicAndUserInfo" type="com.withstars.domain.Topic" >
+  <resultMap id="topicAndUserInfo" type="com.withstars.domain.forum.Topic" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -32,19 +32,19 @@
     <result column="tab_id" property="tabId" jdbcType="TINYINT" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="count_replies" property="countReplies" jdbcType="INTEGER" />
-    <association property="user" javaType="com.withstars.domain.User">
+    <association property="user" javaType="com.withstars.domain.forum.User">
       <id column="id" property="id" jdbcType="INTEGER" />
       <result column="username" property="username" jdbcType="VARCHAR" />
       <result column="avatar" property="avatar" jdbcType="VARCHAR" />
     </association>
-    <association property="tab" javaType="com.withstars.domain.Tab">
+    <association property="tab" javaType="com.withstars.domain.forum.Tab">
       <id column="id" property="id" jdbcType="INTEGER" />
       <result column="tab_name" property="tabName" jdbcType="VARCHAR" />
     </association>
   </resultMap>
 
   <!-- 主题详情及用户必要信息 用于主题详情页  -->
-  <resultMap id="topicAndUserDetail" type="com.withstars.domain.Topic">
+  <resultMap id="topicAndUserDetail" type="com.withstars.domain.forum.Topic">
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -54,7 +54,7 @@
     <result column="click" property="click" jdbcType="INTEGER" />
     <result column="tab_id" property="tabId" jdbcType="TINYINT" />
     <result column="status" property="status" jdbcType="INTEGER" />
-    <association property="user" javaType="com.withstars.domain.User">
+    <association property="user" javaType="com.withstars.domain.forum.User">
       <id column="id" property="id" jdbcType="INTEGER" />
       <result column="username" property="username" jdbcType="VARCHAR" />
       <result column="avatar" property="avatar" jdbcType="VARCHAR" />
@@ -62,7 +62,7 @@
   </resultMap>
 
   <!-- 最多评论主题列表 -->
-  <resultMap id="mostCommentsTopic" type="com.withstars.domain.Topic">
+  <resultMap id="mostCommentsTopic" type="com.withstars.domain.forum.Topic">
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="count_replies" property="countReplies" jdbcType="INTEGER" />
     <result column="title" property="title" jdbcType="VARCHAR" />
@@ -124,7 +124,7 @@
   </select>
 
 
-  <select id="getUnreadTopics" resultType="com.withstars.domain.Topic" parameterType="java.lang.Integer">
+  <select id="getUnreadTopics" resultType="com.withstars.domain.forum.Topic" parameterType="java.lang.Integer">
     SELECT DISTINCT topic.*
     from topic right join reply r on topic.id = r.topic_id
     left join user a on r.reply_user_id = a.id
@@ -149,7 +149,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insert" parameterType="com.withstars.domain.Topic" >
+  <insert id="insert" parameterType="com.withstars.domain.forum.Topic" >
     insert into topic (user_id, create_time,
       update_time, title,
       tab_id, content)
@@ -158,7 +158,7 @@
       #{tabId,jdbcType=TINYINT}, #{content,jdbcType=LONGVARCHAR})
   </insert>
 
-  <insert id="insertSelective" parameterType="com.withstars.domain.Topic" >
+  <insert id="insertSelective" parameterType="com.withstars.domain.forum.Topic" >
     insert into topic
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -214,7 +214,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.withstars.domain.Topic" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.withstars.domain.forum.Topic" >
     update topic
     <set >
       <if test="userId != null" >
@@ -242,7 +242,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.withstars.domain.Topic" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.withstars.domain.forum.Topic" >
     update topic
     set user_id = #{userId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -253,7 +253,7 @@
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.withstars.domain.Topic" >
+  <update id="updateByPrimaryKey" parameterType="com.withstars.domain.forum.Topic" >
     update topic
     set user_id = #{userId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

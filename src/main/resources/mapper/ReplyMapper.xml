@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.withstars.dao.ReplyMapper">
+<mapper namespace="com.withstars.dao.forum.ReplyMapper">
 
     <!--  评论信息   -->
-    <resultMap id="replyAndUser" type="com.withstars.domain.Reply">
+    <resultMap id="replyAndUser" type="com.withstars.domain.forum.Reply">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="topic_id" property="topicId" jdbcType="INTEGER"/>
         <result column="reply_user_id" property="replyUserId" jdbcType="INTEGER"/>
@@ -13,17 +13,17 @@
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="device" property="device" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="LONGVARCHAR"/>
-        <association property="user" javaType="com.withstars.domain.User">
+        <association property="user" javaType="com.withstars.domain.forum.User">
             <id column="id" property="id" jdbcType="INTEGER"/>
             <result column="username" property="username" jdbcType="VARCHAR"/>
             <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
         </association>
     </resultMap>
 
-    <resultMap id="fatherReplyUsername" type="com.withstars.domain.Reply">
+    <resultMap id="fatherReplyUsername" type="com.withstars.domain.forum.Reply">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="father_reply_id" property="fatherReplyId" jdbcType="INTEGER"/>
-        <association property="user" javaType="com.withstars.domain.User">
+        <association property="user" javaType="com.withstars.domain.forum.User">
             <id column="id" property="id" jdbcType="INTEGER"/>
             <result column="username" property="username" jdbcType="VARCHAR"/>
         </association>
@@ -51,7 +51,7 @@
     WHERE topic_id = #{topicId,jdbcType=INTEGER}
   </select>
 
-    <select id="getOwnTopicsReply" resultType="com.withstars.domain.Reply" parameterType="java.lang.Integer">
+    <select id="getOwnTopicsReply" resultType="com.withstars.domain.forum.Reply" parameterType="java.lang.Integer">
         SELECT r.*
 from topic right join reply r on topic.id = r.topic_id
 left join user a on r.reply_user_id = a.id
@@ -60,7 +60,7 @@ left join reply r1 on r.father_reply_id = r1.id
 where r.notice=0 and a.id != #{userId,jdbcType=INTEGER} and b.id=#{userId,jdbcType=INTEGER}  and r.reply_user_id != topic.user_id and ( r1.reply_user_id = #{userId,jdbcType=INTEGER}  or r1.reply_user_id is null)
     </select>
 
-    <select id="getOwnReply" resultType="com.withstars.domain.Reply" parameterType="java.lang.Integer">
+    <select id="getOwnReply" resultType="com.withstars.domain.forum.Reply" parameterType="java.lang.Integer">
         select a.*
         from reply a left join reply b on b.id = a.father_reply_id
         where b.reply_user_id =#{userId,jdbcType=INTEGER}  and a.notice = 0 and a.reply_user_id != b.reply_user_id
@@ -89,7 +89,7 @@ where r.notice=0 and a.id != #{userId,jdbcType=INTEGER} and b.id=#{userId,jdbcTy
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-    <insert id="insert" parameterType="com.withstars.domain.Reply">
+    <insert id="insert" parameterType="com.withstars.domain.forum.Reply">
     insert into reply (topic_id, reply_user_id,
       create_time, update_time,
       content,notice)
@@ -98,7 +98,7 @@ where r.notice=0 and a.id != #{userId,jdbcType=INTEGER} and b.id=#{userId,jdbcTy
       #{content,jdbcType=LONGVARCHAR}, #{notice,jdbcType=INTEGER})
   </insert>
 
-    <insert id="insertWithFather" parameterType="com.withstars.domain.Reply">
+    <insert id="insertWithFather" parameterType="com.withstars.domain.forum.Reply">
         insert into reply (topic_id, reply_user_id,
         create_time, update_time,
         content,notice,father_reply_id)
